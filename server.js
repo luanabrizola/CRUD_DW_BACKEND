@@ -1,6 +1,6 @@
 import fastify from "fastify";
 import 'dotenv/config'
-import { DatabasePostgres } from "./database-postgres";
+import { DatabasePostgres } from "./database-postgres.js";
 
 //istancia o servidor 
 const server = fastify()
