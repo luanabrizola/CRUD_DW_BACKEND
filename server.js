@@ -1,22 +1,12 @@
-/**
- * Servidor Fastify que fornece uma API RESTful para gerenciamento de vídeos.
- * 
- * O servidor suporta os seguintes endpoints:
- * - `POST /videos`: Cria um novo vídeo com título, descrição e duração fornecidos.
- * - `GET /videos`: Recupera uma lista de vídeos, opcionalmente filtrada por um termo de busca.
- * - `PUT /videos/:id`: Atualiza o título, descrição e duração de um vídeo existente.
- * - `DELETE /videos/:id`: Exclui um vídeo existente.
- */
-
 // Importações necessárias
-import { fastify } from "fastify"; // Importa o framework Fastify para criar o servidor
-import cors from '@fastify/cors' // Importa o plugin CORS para permitir requisições de diferentes origens
+import Fastify from 'fastify'; // Importa o framework Fastify para criar o servidor
+import cors from '@fastify/cors'; // Importa o plugin CORS para permitir requisições de diferentes origens
 
-import 'dotenv/config' // Carrega variáveis de ambiente do arquivo .env
-import { DatabasePostgres } from "./database-postgres.js"; // Importa a classe de banco de dados PostgreSQL personalizada
+import 'dotenv/config'; // Carrega variáveis de ambiente do arquivo .env
+import { DatabasePostgres } from './database-postgres.js'; // Importa a classe de banco de dados PostgreSQL personalizada
 
 // Cria uma instância do servidor Fastify
-const server = fastify()
+const server = Fastify();
 
 // Registra o middleware CORS para permitir requisições de qualquer origem
 await server.register(cors, {
@@ -27,7 +17,7 @@ await server.register(cors, {
 const database = new DatabasePostgres();
 
 // Rota para criar um novo usuário (POST)
-server.post("/usuarios", async (request, reply) => {
+server.post('/usuarios', async (request, reply) => {
   // Desestrutura os dados do corpo da requisição
   const { nome, email, celular } = request.body;
 
@@ -43,20 +33,18 @@ server.post("/usuarios", async (request, reply) => {
 });
 
 // Rota para listar usuários (GET)
-server.get("/usuarios", async (request, reply) => {                                    
+server.get('/usuarios', async (request, reply) => {
   // Extrai o parâmetro de busca da query da URL
-  const { nome } = request.query
+  const { nome } = request.query;
   
   // Chama o método list do banco de dados, passando o termo de busca
   const usuarios = await database.list(nome);
 
-  reply.send(usuarios)
-
-  
+  reply.send(usuarios);
 });
 
 // Rota para atualizar um vídeo existente (PUT)
-server.put("/usuarios/:id", async (request, reply) => {
+server.put('/usuarios/:id', async (request, reply) => {
   // Obtém o ID do usuário a ser atualizado a partir dos parâmetros da URL
   const usuarioId = request.params.id;
   // Desestrutura os novos dados do usuário do corpo da requisição
@@ -74,7 +62,7 @@ server.put("/usuarios/:id", async (request, reply) => {
 });
 
 // Rota para excluir um usuário (DELETE)
-server.delete("/usuarios/:id", async (request, reply) => {
+server.delete('/usuarios/:id', async (request, reply) => {
   // Obtém o ID do vídeo a ser excluído a partir dos parâmetros da URL
   const usuarioId = request.params.id;
 
@@ -86,21 +74,21 @@ server.delete("/usuarios/:id", async (request, reply) => {
 
 // Inicia o servidor
 server.listen(
-  { 
+  {
     // Configura para escutar em todos os endereços de rede
-    host: "0.0.0.0",
+    host: '0.0.0.0',
     // Usa a porta definida no .env ou usa a porta 3333 como padrão
-    port: process.env.PORT ?? 3333 
-  }, 
+    port: process.env.PORT ?? 3333,
+  },
   // Callback de inicialização do servidor
   function (err, address) {
     // Em caso de erro, registra o erro e encerra o processo
     if (err) {
-      server.log.error(err)
-      process.exit(1)
+      server.log.error(err);
+      process.exit(1);
     }
 
     // Registra mensagem de sucesso com o endereço do servidor
-    console.log(`Servidor rodando no endereço ${address}`)
+    console.log(`Servidor rodando no endereço ${address}`);
   }
-)
+);
